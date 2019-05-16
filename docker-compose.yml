@@ -29,8 +29,8 @@ services:
     build: ./Dockerfile
     environment:
       XDEBUG_ENABLED: "true"
-      XDEBUG_CONFIG: "remote_host=172.19.0.3 remote_enable=1 remote_autostart = 1 remote_connect_back = 1"
-      PHP_IDE_CONFIG: "serverName=dev.local"
+      XDEBUG_CONFIG: "remote_enable=1 remote_autostart = 1 remote_connect_back = 1"
+      PHP_IDE_CONFIG: "serverName=ambientum"
     volumes:
       - ./:/var/www/app
       - ./config/php.ini:/etc/php7/php.ini
