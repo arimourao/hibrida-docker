@@ -27,11 +27,11 @@ services:
     image: ambientum/php:7.3-nginx
     container_name: hibrida-nginx
     environment:
-      TIMEZONE: America/Sao_Paulo
-      PHP_MEMORY_LIMIT: 512M
-      MAX_UPLOAD: 50M
-      PHP_MAX_FILE_UPLOAD: 200
-      PHP_MAX_POST: 100M
+      TIMEZONE: "America/Sao_Paulo"
+      PHP_MEMORY_LIMIT: "512M"
+      MAX_UPLOAD: "50M"
+      PHP_MAX_FILE_UPLOAD: "200"
+      PHP_MAX_POST: "100M"
       XDEBUG_ENABLED: "true"
       XDEBUG_CONFIG: "remote_enable=1 remote_autostart = 1 remote_connect_back = 1"
       PHP_IDE_CONFIG: "serverName=ambientum"
