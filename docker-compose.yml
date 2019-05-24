@@ -40,5 +40,20 @@ services:
       - ./logs/mysql-error.log:/var/log/mysql/error.log;
     ports:
       - "80:8080"
+    depends_on:
+      - mysql
+    links:
+      - mysql
+
+  pma:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: "hibrida"
+    ports:
+      - 8080:80
+    depends_on:
+      - mysql
     links:
       - mysql
