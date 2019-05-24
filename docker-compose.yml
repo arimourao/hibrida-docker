@@ -24,7 +24,7 @@ services:
 
   # PHP (with Nginx)
   app:
-    image: ambientum/php:7.3-nginx
+    image: ambientum/php:7.2-nginx
     container_name: hibrida-nginx
     environment:
       TIMEZONE: "America/Sao_Paulo"
