@@ -4,28 +4,28 @@ version: '2'
 # Named volumes
 volumes:
   # MySQL Data
-  hibrida-mysql-data:
+  phpdev-mysql-data:
     driver: local
 
 services:
   # MySQL (5.7)
   mysql:
     image: mysql:5.7
-    container_name: hibrida-mysql
+    container_name: phpdev-mysql
     volumes:
       - ./db-data/:/var/lib/mysql
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=hibrida    
-      - MYSQL_DATABASE=hibrida
-      - MYSQL_USER=hibrida
-      - MYSQL_PASSWORD=hibrida
+      - MYSQL_ROOT_PASSWORD=phpdev    
+      - MYSQL_DATABASE=phpdev
+      - MYSQL_USER=phpdev
+      - MYSQL_PASSWORD=phpdev
 
   # PHP (with Nginx)
   app:
-    image: ambientum/php:7.2-nginx
-    container_name: hibrida-nginx
+    image: ambientum/php:7.1-nginx
+    container_name: phpdev-nginx
     environment:
       TIMEZONE: "America/Sao_Paulo"
       PHP_MEMORY_LIMIT: "512M"
@@ -34,9 +34,9 @@ services:
       PHP_MAX_POST: "100M"
       XDEBUG_ENABLED: "true"
       XDEBUG_CONFIG: "remote_enable=1 remote_autostart = 1 remote_connect_back = 1"
-      PHP_IDE_CONFIG: "serverName=ambientum"
+      PHP_IDE_CONFIG: "serverName=php-docker.local"
     volumes:
-      - ./:/var/www/app
+      - ./public:/var/www/app/public
       - ./config/php.ini:/etc/php7/php.ini
       - ./config/www.conf:/etc/php7/php-fpm.d/www.conf
       - ./config/nginx.conf:/etc/nginx/nginx.conf
@@ -54,7 +54,6 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: "hibrida"
     ports:
       - 8080:80
     depends_on:
