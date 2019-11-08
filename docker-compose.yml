@@ -4,28 +4,27 @@ version: '2'
 # Named volumes
 volumes:
   # MySQL Data
-  phpdev-mysql-data:
+  portal-dev-mysql-data:
     driver: local
 
 services:
   # MySQL (5.7)
   mysql:
     image: mysql:5.7
-    container_name: phpdev-mysql
+    container_name: portal-dev-mysql
     volumes:
       - ./db-data/:/var/lib/mysql
     ports:
       - "3306:3306"
     environment:
-      - MYSQL_ROOT_PASSWORD=phpdev    
-      - MYSQL_DATABASE=phpdev
-      - MYSQL_USER=phpdev
-      - MYSQL_PASSWORD=phpdev
+      - MYSQL_ROOT_PASSWORD=admin
+      - MYSQL_DATABASE=portal
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=admin
 
-  # PHP (with Nginx)
-  app:
-    image: ambientum/php:7.1-nginx
-    container_name: phpdev-nginx
+  apachephp:
+    build: .
+    container_name: portal-dev-apache
     environment:
       TIMEZONE: "America/Sao_Paulo"
       PHP_MEMORY_LIMIT: "512M"
@@ -33,23 +32,19 @@ services:
       PHP_MAX_FILE_UPLOAD: "200"
       PHP_MAX_POST: "100M"
       XDEBUG_ENABLED: "true"
-      XDEBUG_CONFIG: "remote_enable=1 remote_autostart = 1 remote_connect_back = 1"
+      XDEBUG_CONFIG: "remote_enable=1 remote_autostart = 1 remote_connect_back = 1 var_display_max_children=-1 var_display_max_data=-1 var_display_max_depth=-1"
       PHP_IDE_CONFIG: "serverName=php-docker.local"
     volumes:
-      - ./public:/var/www/app/public
-      - ./config/php.ini:/etc/php7/php.ini
-      - ./config/www.conf:/etc/php7/php-fpm.d/www.conf
-      - ./config/nginx.conf:/etc/nginx/nginx.conf
-      - ./logs/nginx-error.log/error.log:/var/log/nginx/error.log;
-      - ./logs/mysql-error.log:/var/log/mysql/error.log;
+      - ./public:/var/www/html
+      - ./config/php.ini:/usr/local/etc/php/php.ini
     ports:
-      - "80:8080"
+      - "80:80"
     depends_on:
       - mysql
     links:
       - mysql
 
-  pma:
+  phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: mysql

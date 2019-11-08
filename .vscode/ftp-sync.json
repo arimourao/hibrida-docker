@@ -1,0 +1,27 @@
+{
+    "remotePath": "./",
+    "host": "ftp.sigepnet.com.br",
+    "username": "sigepnetcom",
+    "password": "~@21[1D0E~@7",
+    "port": 21,
+    "secure": true,
+    "protocol": "ftp",
+    "uploadOnSave": false,
+    "passive": false,
+    "debug": false,
+    "privateKeyPath": null,
+    "passphrase": null,
+    "agent": null,
+    "allow": [],
+    "ignore": [
+        "\\.vscode",
+        "\\.git",
+        "\\.DS_Store"
+    ],
+    "generatedFiles": {
+        "extensionsToInclude": [
+            ""
+        ],
+        "path": ""
+    }
+}
