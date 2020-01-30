@@ -1,30 +1,33 @@
-FROM php:5.6-apache
+ARG DEBIAN_FRONTEND=noninteractive
 
+FROM php:7.2.24-apache-buster
 LABEL Ari Mourão <amlima@gmail.com>
 
-RUN apt-get update && apt-get -y install apt-utils gnupg2 apt-transport-https lsb-release \
-freetds-bin freetds-dev freetds-common
+RUN apt-get update && apt-get install -y --fix-missing \
+    git \
+    apt-utils \
+    #dependencia pgsql
+    libpq-dev \
+    #dependencias gd
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    #dependencias zip
+    zlib1g-dev \
+    libzip-dev
 
-RUN export DEBIAN_FRONTEND=noninteractive && apt-get update \
-    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
-    && curl https://packages.microsoft.com/config/debian/9/prod.list \
-        > /etc/apt/sources.list.d/mssql-release.list \
-    && apt-get install -y --no-install-recommends \
-        locales \
-    && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-    && locale-gen \
-    && apt-get update \
-    && apt-get -y --no-install-recommends install unixodbc unixodbc-dev \
-    && apt-get -y update && \
-    export ACCEPT_EULA=Y && apt-get -y install msodbcsql17 mssql-tools
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
+RUN docker-php-ext-configure gd
 
-RUN ln -s /usr/lib/x86_64-linux-gnu/libsybdb.so /usr/lib/
+RUN docker-php-ext-install -j$(nproc) gd
+RUN docker-php-ext-install zip
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
 
 RUN BEFORE_PWD=$(pwd) \
     && mkdir -p /opt/xdebug \
     && cd /opt/xdebug \
-    && curl -k -L https://github.com/xdebug/xdebug/archive/XDEBUG_2_5_5.tar.gz | tar zx \
-    && cd xdebug-XDEBUG_2_5_5 \
+    && curl -k -L https://github.com/xdebug/xdebug/archive/2.8.0.tar.gz | tar zx \
+    && cd xdebug-2.8.0 \
     && phpize \
     && ./configure --enable-xdebug \
     && make clean \
@@ -35,7 +38,8 @@ RUN BEFORE_PWD=$(pwd) \
     && cd "${BEFORE_PWD}" \
     && rm -r /opt/xdebug
 
-RUN docker-php-ext-install mssql mysqli pdo pdo_mysql && docker-php-ext-configure mssql
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 RUN docker-php-ext-enable xdebug
 
